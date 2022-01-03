@@ -68,7 +68,7 @@ bir tanesi bile tutmazsa listelenmez.
 SELECT * FROM matematik WHERE sinav1 < 50 AND sinav2 < 50
 Bu örnekte hem sınav1 hem de sınav2 alanı 50'den küçük olan kayıtlar listelenecektir.
 
-=====Or (Veya) Operatörü Kullanımı=====
+===== Or (Veya) Operatörü Kullanımı=====
 
 Or ile belirtilen şartlardan en az biri gerçekleşiyorsa o kayıt listelenir,
 şartlardan hiçbiri gerçekleşmiyorsa o kayıt listelenmez.
@@ -173,6 +173,11 @@ where maas in(7000,'meryem');
   select * from personel
       where isim like '_e%y%';
 
+-- isminde 3 sırada h ve sonrasında a olanların ismini listele
+
+select isim from personel
+where isim like '__h%a%';
+
 
 
 /* -----------------------------------------------------------------------------
@@ -207,7 +212,7 @@ where isim like 'a_____a%';
     
     
 /* -----------------------------------------------------------------------------
-  ORNEK17:  maaşının 4000 olmayanları listeleyiniz
+  ORNEK17:  maaşı 4000 olmayanları listeleyiniz
  -----------------------------------------------------------------------------*/  
     SELECT * FROM personel
     WHERE maas NOT LIKE 4000;
