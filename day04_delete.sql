@@ -71,6 +71,11 @@
     delete from ogrenciler where id in (123,125,126);
     select*from ogrenciler;
     
+    delete from ogrenciler where id=123 and id=125 and id=126;
+    
+    -- iki şekilde de yaapbiliriz.
+    
+    
 /* ----------------------------------------------------------------------------
   ORNEK7:  TABLODAKİ TÜM KAYITLARI SİLELİM..
  -----------------------------------------------------------------------------*/     
