@@ -35,27 +35,48 @@ CREATE TABLE calisanlar
  
  -- ============================  TABLOLAR ÜZERİNDE İŞLEMLER  ================================= -- 
  
- -- Veli Han'ın maaşına %20 zam yapalım.
+ -- 2-) Veli Han'ın maaşına %20 zam yapalım.
  
  update calisanlar
  set maas = maas*1.2     -- java da oldugu gibi işlem yaptım. 
  where isim ='Veli Han' ;
  
  
- -- Maaşı ortalamanın altında olan çalışanların maaşına %20 zam yapalım.
+ -- 3-) Maaşı ortalamanın altında olan çalışanların maaşına %20 zam yapalım.
  
  update calisanlar
  set maas=maas*1.2
  where maas < (select avg(maas) from (select maas from calisanlar) as kaynak);
  
  
- -- Çalışanların isim ve cocuk_sayisi'ni listeleyen bir sorgu yazınız. 
- -- calisanlar' ın id, isim ve toplam_gelir'lerini gösteren bir sorgu yazınız. 
- -- toplam_gelir = calisanlar.maas + aileler.ek_gelir
+ -- 4-) Çalışanların isim ve cocuk_sayisi'ni listeleyen bir sorgu yazınız.
  
- /* ) Eğer bir ailenin kişi başı geliri 2000 TL den daha az ise o çalışanın
- -- maaşına ek %10 aile yardım zammı yapınız. 
- -- kisi_basi_gelir = toplam_gelir / cocuk_sayisi + 2 (anne ve baba  */
+select isim , (select cocuk_sayisi from aileler where calisanlar.id=aileler.id)
+from calisanlar;
+
+
+select isim, cocuk_sayisi
+from calisanlar, aileler
+where calisanlar.id=aileler.id;
+
+
+ -- 5-) calisanlar' ın id, isim ve toplam_gelir'lerini gösteren bir sorgu yazınız. 
+ --      toplam_gelir = calisanlar.maas + aileler.ek_gelir
+
+
+select id,isim, (maas + (select ek_gelir from aileler where calisanlar.id=aileler.id)) as toplam_gelir
+from calisanlar;
+
+
+
+ /* 
+ 6-) Eğer bir ailenin kişi başı geliri 2000 TL den daha az ise o çalışanın
+	 maaşına ek %10 aile yardım zammı yapınız. 
+	kisi_basi_gelir = toplam_gelir / cocuk_sayisi + 2 (anne ve baba ) */
  
- 
- 
+ update calisanlar
+ set maas = maas + (maas/100*10)
+ where 2000>(maas+(select ek_gelir from aileler where calisanlar.id=aileler.id))/((select cocuk_sayisi from aileler where calisanlar.id = aileler.id)+2);
+ select id, isim, maas
+ from calisanlar;
+    
