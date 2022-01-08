@@ -37,7 +37,7 @@ CREATE TABLE calisanlar
  
  -- 2-) Veli Han'ın maaşına %20 zam yapalım.
  
- update calisanlar
+ update calisanlar       -- kalıcı degişiklik yapar.
  set maas = maas*1.2     -- java da oldugu gibi işlem yaptım. 
  where isim ='Veli Han' ;
  
@@ -46,26 +46,31 @@ CREATE TABLE calisanlar
  
  update calisanlar
  set maas=maas*1.2
- where maas < (select avg(maas) from (select maas from calisanlar) as kaynak);
- 
+ where maas < (select avg(maas) from (select maas from calisanlar) as zam);
+ select * from calisanlar;
  
  -- 4-) Çalışanların isim ve cocuk_sayisi'ni listeleyen bir sorgu yazınız.
  
-select isim , (select cocuk_sayisi from aileler where calisanlar.id=aileler.id)
+select isim , (select cocuk_sayisi from aileler where calisanlar.id=aileler.id) as cocuk_sayisi
 from calisanlar;
+-- bu tablodan ismi al, bu tablodan cocuk sayısını al. farklı tablolar. nerden baglaycam? idleri eşit olan tablodan, idlere göre bak, getir.
+
+select isim, cocuk_sayisi             -- select tablolarında bu şekilde de çözebilirz.
+from calisanlar, aileler                    
+where calisanlar.id=aileler.id;       -- hangi satırı hangi satıra denk getirecegini bilmesi için yazarım.
 
 
-select isim, cocuk_sayisi
-from calisanlar, aileler
-where calisanlar.id=aileler.id;
-
-
- -- 5-) calisanlar' ın id, isim ve toplam_gelir'lerini gösteren bir sorgu yazınız. 
+ --  5-) calisanlar' ın id, isim ve toplam_gelir'lerini gösteren bir sorgu yazınız. 
  --      toplam_gelir = calisanlar.maas + aileler.ek_gelir
 
 
 select id,isim, (maas + (select ek_gelir from aileler where calisanlar.id=aileler.id)) as toplam_gelir
 from calisanlar;
+
+-- 2. bir yol ile de yapabiliriz.
+select isim , (maas + ek_gelir) as toplam_gelir , calisanlar.id
+from calisanlar,aileler
+where calisanlar.id=aileler.id;
 
 
 
@@ -75,8 +80,7 @@ from calisanlar;
 	kisi_basi_gelir = toplam_gelir / cocuk_sayisi + 2 (anne ve baba ) */
  
  update calisanlar
- set maas = maas + (maas/100*10)
- where 2000>(maas+(select ek_gelir from aileler where calisanlar.id=aileler.id))/((select cocuk_sayisi from aileler where calisanlar.id = aileler.id)+2);
- select id, isim, maas
- from calisanlar;
+ set maas = maas * 1.1
+ where  (select (maas+ek_gelir) / (cocuk_sayisi+2) from aileler where calisanlar.id=aileler.id) < 2000
+ 
     
