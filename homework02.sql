@@ -46,16 +46,17 @@ CREATE TABLE calisanlar
  
  update calisanlar
  set maas=maas*1.2
- where maas < (select avg(maas) from (select maas from calisanlar) as zam);
- select * from calisanlar;
+ where maas < (select avg(maas) from (select maas from calisanlar) as zam);  -- bütün çalışanlar tablosunu al,getir,sonra maaşın ortalamasını al 
+ select * from calisanlar;   -- direk maaş diyemiyoruz, çalışanlar tablosuna gidip oradan almam gerekiyor.
  
  -- 4-) Çalışanların isim ve cocuk_sayisi'ni listeleyen bir sorgu yazınız.
  
-select isim , (select cocuk_sayisi from aileler where calisanlar.id=aileler.id) as cocuk_sayisi
+select isim , (select cocuk_sayisi from aileler where calisanlar.id=aileler.id) as cocuk_sayisi  
+                     -- başka tablodan alıyorum bu yüzden yeniden from ile belirtiyorum
 from calisanlar;
--- bu tablodan ismi al, bu tablodan cocuk sayısını al. farklı tablolar. nerden baglaycam? idleri eşit olan tablodan, idlere göre bak, getir.
+-- bu tablodan ismi al, diğer tablo olan şu tablodan cocuk sayısını al. farklı tablolar. nerden baglaycam? idleri eşit olan tablodan, idlere göre bak, getir.
 
-select isim, cocuk_sayisi             -- select tablolarında bu şekilde de çözebilirz.
+select isim, cocuk_sayisi             -- select tablolarında bu şekilde de çözebilirz.  join veya update de olmaz.
 from calisanlar, aileler                    
 where calisanlar.id=aileler.id;       -- hangi satırı hangi satıra denk getirecegini bilmesi için yazarım.
 
@@ -79,8 +80,8 @@ where calisanlar.id=aileler.id;
 	 maaşına ek %10 aile yardım zammı yapınız. 
 	kisi_basi_gelir = toplam_gelir / cocuk_sayisi + 2 (anne ve baba ) */
  
- update calisanlar
+ update calisanlar          -- zam işlemi,kalıcı bir degişiklik olacak bu yüzden update yapacam.
  set maas = maas * 1.1
- where  (select (maas+ek_gelir) / (cocuk_sayisi+2) from aileler where calisanlar.id=aileler.id) < 2000
+ where  (select (maas+ek_gelir) / (cocuk_sayisi+2) from aileler where calisanlar.id=aileler.id) < 2000;
  
     
